@@ -36,6 +36,22 @@ const configuracion={
     port: 3000,
 }
 
+app.get("",(req:any, res:any) => {
+    connection.query("select * from Usuarios", function(error:any, results:any, fields:any){
+        res.send(JSON.stringify(results));
+    });
+});
+
+app.post("",jsonParser,(req:any, res:any) => {
+    let usuario=req.body.usuario;
+    let clave=req.body.clave;
+    console.log(usuario);
+    connection.query("select * from Usuarios where Usuario=? and Password=?",[usuario,clave],function(error:any,results:any,fields:any){
+        res.send(JSON.stringify(results));
+    });
+})
+
+//PUT VIENE CON EL CODIGO
 app.put("/registro",jsonParser,(req:any, res:any) => {
     let nombre=req.body.nombre;
     let apellidos=req.body.apellidos;
@@ -49,6 +65,13 @@ app.put("/registro",jsonParser,(req:any, res:any) => {
         res.send(JSON.stringify({"mensaje":true,"resultado":results}));
     });
   });
+
+app.delete("",jsonParser, (req:any,res:any)=>{
+    let usuario=req.body.usuario;
+    connection.query("delete from Usuarios where Usuario=?",[usuario],function(error:any,results:any,fields:any){
+        res.send(JSON.stringify({"eliminado":true}));
+    });
+});
 
 app.listen(configuracion, () => {
     console.log(`Conectando al servidor http://localhost:${configuracion.port}`)
